@@ -1,49 +1,37 @@
-// Modules to control application life and create native browser window
-const { desktopCapturer } = require("electron");
+const { desktopCapturer, ipcRenderer } = require("electron");
 const { app } = require("electron").remote;
 
-// const { fullscreenScreenshot } = require("./fullscreencapture.js");
+console.log("desktopCapturer", desktopCapturer);
 
-const electron = require("electron");
+function capture() {
+  fullscreenScreenshot(function(base64data) {
+    saveImage(base64data);
+    copyToclipboard(base64data);
+  }, "image/png");
+}
 
-const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize;
-var debug = document.getElementById("debug");
-
-log("width / height = " + width + " / " + height);
-
-// // In this file you can include the rest of your app's specific main process
-// // code. You can also put them in separate files and require them here.
-
-desktopCapturer.getSources({ types: ["screen"] }, (error, sources) => {
-  if (error) throw error;
-  log("getSources");
-
-  for (let i = 0; i < sources.length; ++i) {
-    log("getSources >>" + JSON.stringify(sources[i]));
-    const id = sources[i].id;
-
-    fullscreenScreenshot(function(base64data) {
-      document.getElementById("my-preview").setAttribute("src", base64data);
-      saveImage(base64data);
-      copyToclipboard(base64data);
-    }, "image/png");
-  }
+ipcRenderer.on("capture", (data) => {
+  log("on capture");
+  capture();
 });
 
-function copyToclipboard(base64data){
-    const nativeImage = require('electron').nativeImage;
-    const {clipboard} = require('electron');
-    
-    const image = nativeImage.createFromDataURL(base64data);
-    clipboard.writeImage(image);
+function copyToclipboard(base64data) {
+  const nativeImage = require("electron").nativeImage;
+  const { clipboard } = require("electron");
+
+  const image = nativeImage.createFromDataURL(base64data);
+  clipboard.writeImage(image);
 }
 
 function log(message) {
-  debug.innerHTML += "<br>" + message;
+  console.log(message);
+}
+
+function error(error) {
+  console.error(error);
 }
 
 function getDesktop() {
-  //   const { app } = require("electron");
   return app.getPath("desktop");
 }
 
@@ -68,7 +56,7 @@ function saveImage(data) {
   var binaryData;
 
   const fileName = getFileName();
-  console.log("saving image to " + fileName);
+  log("saving image to: " + fileName);
 
   base64Data = data.replace(/^data:image\/png;base64,/, "");
   base64Data += base64Data.replace("+", " ");
@@ -77,12 +65,9 @@ function saveImage(data) {
   try {
     fs.writeFileSync(fileName, binaryData, "binary");
   } catch (e) {
-    console.error("Error saving file", e);
+    error("Error saving file", e);
   }
-
 }
-
-const { screen } = require("electron");
 
 /**
  * Create a screenshot of the entire screen using the desktopCapturer module of Electron.
@@ -116,8 +101,6 @@ function fullscreenScreenshot(callback, imageFormat) {
       if (_this.callback) {
         // Save screenshot to base64
         _this.callback(canvas.toDataURL(imageFormat));
-      } else {
-        console.log("Need callback!");
       }
 
       // Remove hidden video tag
