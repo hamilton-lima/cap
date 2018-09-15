@@ -1,5 +1,7 @@
 // Modules to control application life and create native browser window
 const { desktopCapturer } = require("electron");
+const { app } = require("electron").remote;
+
 // const { fullscreenScreenshot } = require("./fullscreencapture.js");
 
 const electron = require("electron");
@@ -23,12 +25,41 @@ desktopCapturer.getSources({ types: ["screen"] }, (error, sources) => {
     fullscreenScreenshot(function(base64data) {
       document.getElementById("my-preview").setAttribute("src", base64data);
       saveImage(base64data);
+      copyToclipboard(base64data);
     }, "image/png");
   }
 });
 
+function copyToclipboard(base64data){
+    const nativeImage = require('electron').nativeImage;
+    const {clipboard} = require('electron');
+    
+    const image = nativeImage.createFromDataURL(base64data);
+    clipboard.writeImage(image);
+}
+
 function log(message) {
   debug.innerHTML += "<br>" + message;
+}
+
+function getDesktop() {
+  //   const { app } = require("electron");
+  return app.getPath("desktop");
+}
+
+function getTimeStampForFileName() {
+  return new Date()
+    .toISOString()
+    .replace("T", "_")
+    .replace(/:/g, "-")
+    .replace("Z", "")
+    .trim();
+}
+
+function getFileName() {
+  const path = require("path");
+  const result = getDesktop() + path.sep + getTimeStampForFileName() + ".png";
+  return result;
 }
 
 function saveImage(data) {
@@ -36,13 +67,19 @@ function saveImage(data) {
   var base64Data;
   var binaryData;
 
+  const fileName = getFileName();
+  console.log("saving image to " + fileName);
+
   base64Data = data.replace(/^data:image\/png;base64,/, "");
   base64Data += base64Data.replace("+", " ");
   binaryData = new Buffer(base64Data, "base64").toString("binary");
 
-  fs.writeFile("out2.png", binaryData, "binary", function(err) {
-    console.log(err); // writes out file without error, but it's not a valid image
-  });
+  try {
+    fs.writeFileSync(fileName, binaryData, "binary");
+  } catch (e) {
+    console.error("Error saving file", e);
+  }
+
 }
 
 const { screen } = require("electron");
