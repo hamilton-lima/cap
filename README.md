@@ -11,4 +11,5 @@ Screen capture tool
 
 ## Future work
 
+- Create installer using https://github.com/electron-userland/electron-packager
 - Add auto run using https://www.npmjs.com/package/auto-launch
