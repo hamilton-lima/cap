@@ -12,4 +12,7 @@ Screen capture tool
 ## Future work
 
 - Create installer using https://github.com/electron-userland/electron-packager
+- Create visual tool to annotate the captures
+- Keep track of the list of captures to edit the annotations
 - Add auto run using https://www.npmjs.com/package/auto-launch
+- Allow target folder customization
