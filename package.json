@@ -1,7 +1,7 @@
 {
-  "name": "electron-quick-start",
-  "version": "1.0.0",
-  "description": "A minimal Electron application",
+  "name": "cap",
+  "version": "0.0.1",
+  "description": "Screen Capture made simple",
   "main": "main.js",
   "scripts": {
     "start": "electron ."
@@ -14,12 +14,10 @@
     "tutorial",
     "demo"
   ],
-  "author": "GitHub",
-  "license": "CC0-1.0",
+  "author": "Hamilton Lima",
+  "license": "MIT",
   "devDependencies": {
-    "electron": "^2.0.0"
+    "electron": "2.0.0"
   },
-  "dependencies": {
-    "electron-screencapture": "^1.1.0"
-  }
+  "dependencies": {}
 }

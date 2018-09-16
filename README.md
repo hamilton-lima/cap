@@ -21,10 +21,11 @@ npm start
 
 ## Future work
 
-- Create installer using https://github.com/electron-userland/electron-packager
+- Create installer using https://www.npmjs.com/package/electron-forge
 - Create crop capture alternative using transparent window over the entire window http://electron.rocks/transparent-window/
 - Add support to fixed size captures
 - Create visual tool to annotate the captures
 - Keep track of the list of captures to edit the annotations
 - Add auto run using https://www.npmjs.com/package/auto-launch
 - Allow target folder customization
+

@@ -1,8 +1,13 @@
 const { app, Menu, Tray, BrowserWindow } = require("electron");
 const { globalShortcut } = require("electron");
+const path = require("path");
+const package = require( path.join(__dirname, "package.json") );
 
 let mainWindow;
 let tray = null;
+
+// TODO: move to a class
+let shortcut = "Ctrl+PrintScreen";
 
 function createWindow() {
   mainWindow = new BrowserWindow({ width: 800, height: 600, show: false });
@@ -13,18 +18,22 @@ function createWindow() {
 }
 
 function createTray() {
-  if (process.platform !== "darwin") {
-    tray = new Tray("cap-white.png");
-  } else {
-    tray = new Tray("cap.png");
+  var trayiconName = path.join(__dirname, "cap-white.png");
+
+  if (process.platform == "darwin") {
+    trayiconName = path.join(__dirname, "cap.png");
   }
+
+  console.log("Creating tray icon " + trayiconName);
+  tray = new Tray(trayiconName);
 
   const contextMenu = Menu.buildFromTemplate([
     {
-      label: "CAP screen capture"
+      label: "CAP screen capture " + package.version,
+      type: "normal"
     },
     {
-      label: "Capture",
+      label: "Capture " + shortcut,
       click() {
         console.log("click capture");
         capture();
@@ -43,15 +52,16 @@ function createTray() {
 }
 
 function createGlobalShortcut() {
-  globalShortcut.register("CommandOrControl+Shift+5", () => {
-    console.log("CommandOrControl+Shift+5");
+
+  if (process.platform == "darwin") {
+    shortcut = "CommandOrControl+Shift+5"
+  } 
+
+  globalShortcut.register(shortcut, () => {
+    console.log("shortcut pressed: " + shortcut);
     capture();
   });
 
-  globalShortcut.register("Ctrl+PrintScreen", () => {
-    console.log("Ctrl+PrintScreen");
-    capture();
-  });
 }
 
 function capture() {
@@ -59,8 +69,8 @@ function capture() {
 }
 
 app.on("ready", createWindow);
-app.on("ready", createTray);
 app.on("ready", createGlobalShortcut);
+app.on("ready", createTray);
 
 app.on("window-all-closed", function() {
   if (process.platform !== "darwin") {
