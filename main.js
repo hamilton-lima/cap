@@ -1,5 +1,6 @@
 // Modules to control application life and create native browser window
 const { app, Menu, Tray, BrowserWindow } = require("electron");
+const { globalShortcut } = require("electron");
 
 let mainWindow;
 let tray = null;
@@ -13,7 +14,12 @@ function createWindow() {
 }
 
 function createTray() {
-  tray = new Tray("cap-white.png");
+  if (process.platform !== "darwin") {
+    tray = new Tray("cap-white.png");
+  } else {
+    tray = new Tray("cap.png");
+  }
+
   const contextMenu = Menu.buildFromTemplate([
     {
       label: "CAP screen capture"
@@ -22,7 +28,7 @@ function createTray() {
       label: "Capture",
       click() {
         console.log("click capture");
-        mainWindow.webContents.send("capture", "foo");
+        capture();
       }
     },
     {
@@ -37,8 +43,25 @@ function createTray() {
   tray.setContextMenu(contextMenu);
 }
 
+function createGlobalShortcut() {
+  globalShortcut.register("CommandOrControl+Shift+5", () => {
+    console.log("CommandOrControl+Shift+5");
+    capture();
+  });
+
+  globalShortcut.register("Ctrl+PrintScreen", () => {
+    console.log("Ctrl+PrintScreen");
+    capture();
+  });
+}
+
+function capture() {
+  mainWindow.webContents.send("capture", "foo");
+}
+
 app.on("ready", createWindow);
 app.on("ready", createTray);
+app.on("ready", createGlobalShortcut);
 
 app.on("window-all-closed", function() {
   if (process.platform !== "darwin") {
