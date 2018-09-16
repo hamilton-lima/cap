@@ -121,7 +121,7 @@ function fullscreenScreenshot(callback, imageFormat) {
   // Filter only screen type
   desktopCapturer.getSources({ types: ["screen"] }, (error, sources) => {
     if (error) throw error;
-    // console.log(sources);
+
     for (let i = 0; i < sources.length; ++i) {
       console.log(sources);
       // Filter: main screen
