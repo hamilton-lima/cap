@@ -39,7 +39,7 @@ function getDesktop() {
 function getSavePath() {
   console.log("getSavePath()");
   let rawData = fs.readFileSync('settings.json');
-  settings = JSON.parse(rawData);
+  settings = JSON.parse(rawData); //TODO: Read settings once and store as global var.   
   console.log("rawData: " + rawData);
   console.log(settings);
   if (settings.saveDir != "")
@@ -65,7 +65,6 @@ function getFileName() {
 }
 
 function saveImage(data) {
-  var fs = require("fs");
   var base64Data;
   var binaryData;
 
