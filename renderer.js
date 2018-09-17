@@ -1,5 +1,6 @@
 const { desktopCapturer, ipcRenderer } = require("electron");
 const { app } = require("electron").remote;
+const fs = require('fs');
 
 console.log("desktopCapturer", desktopCapturer);
 
@@ -35,6 +36,19 @@ function getDesktop() {
   return app.getPath("desktop");
 }
 
+function getSavePath() {
+  console.log("getSavePath()");
+  let rawData = fs.readFileSync('settings.json');
+  settings = JSON.parse(rawData); //TODO: Read settings once and store as global var.   
+  console.log("rawData: " + rawData);
+  console.log(settings);
+  if (settings.saveDir != "")
+  {
+    return settings.saveDir;
+  }
+  return getDesktop();
+}
+
 function getTimeStampForFileName() {
   return new Date()
     .toISOString()
@@ -46,12 +60,11 @@ function getTimeStampForFileName() {
 
 function getFileName() {
   const path = require("path");
-  const result = getDesktop() + path.sep + getTimeStampForFileName() + ".png";
+  const result = getSavePath() + path.sep + getTimeStampForFileName() + ".png";
   return result;
 }
 
 function saveImage(data) {
-  var fs = require("fs");
   var base64Data;
   var binaryData;
 
