@@ -18,8 +18,28 @@ cd cap
 npm install
 npm start 
 ```
+## Build
 
-## Future work
+Mac
+```
+electron-packager ./ --platform=darwin --out=build
+node_modules/.bin/jszip --config=release-config/release-mac.json 
+```
+
+Linux
+```
+electron-packager ./ --platform=linux --out=build
+node_modules/.bin/jszip --config=release-config/release-linux.json 
+```
+
+Windows (needs to run on windows)
+```
+electron-packager ./ --platform=win32 --out=build
+node_modules/.bin/jszip --config=release-config/release-windows.json 
+```
+
+
+## Next steps
 
 - Create installer using https://www.npmjs.com/package/electron-forge
 - Create crop capture alternative using transparent window over the entire window http://electron.rocks/transparent-window/

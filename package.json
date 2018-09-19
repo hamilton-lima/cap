@@ -18,7 +18,8 @@
   "license": "MIT",
   "devDependencies": {
     "electron": "2.0.8",
-    "electron-packager": "^12.1.2"
+    "electron-packager": "^12.1.2",
+    "jszip-cli": "^1.4.24"
   },
   "dependencies": {}
 }
