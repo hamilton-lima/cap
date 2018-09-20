@@ -38,6 +38,13 @@ electron-packager ./ --platform=win32 --out=build
 node_modules/.bin/jszip --config=release-config/release-windows.json 
 ```
 
+## How to contribute
+
+- Create an issue or just take an existing one by replying saying that I will do it :)
+- Code
+- Use Prettier to format your files
+- Send a pull request
+
 
 ## Next steps
 
