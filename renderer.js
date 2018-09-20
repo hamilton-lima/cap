@@ -1,6 +1,6 @@
 const { desktopCapturer, ipcRenderer } = require("electron");
 const { app } = require("electron").remote;
-const fs = require('fs');
+const fs = require("fs");
 
 console.log("desktopCapturer", desktopCapturer);
 
@@ -11,7 +11,7 @@ function capture() {
   }, "image/png");
 }
 
-ipcRenderer.on("capture", (data) => {
+ipcRenderer.on("capture", data => {
   log("on capture");
   capture();
 });
@@ -38,12 +38,11 @@ function getDesktop() {
 
 function getSavePath() {
   console.log("getSavePath()");
-  let rawData = fs.readFileSync('settings.json');
-  settings = JSON.parse(rawData); //TODO: Read settings once and store as global var.   
+  let rawData = fs.readFileSync("settings.json");
+  settings = JSON.parse(rawData); //TODO: Read settings once and store as global var.
   console.log("rawData: " + rawData);
   console.log(settings);
-  if (settings.saveDir != "")
-  {
+  if (settings.saveDir != "") {
     return settings.saveDir;
   }
   return getDesktop();
