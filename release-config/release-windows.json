@@ -1,0 +1,8 @@
+{
+    "entities": [
+        { "name": "./build/cap-win32-x64", "root": true }
+    ],
+    "options": {
+        "output": "./release/cap-win32-x64.zip"
+    }
+}
