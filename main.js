@@ -4,16 +4,25 @@ const path = require("path");
 const package = require( path.join(__dirname, "package.json") );
 
 let mainWindow;
+let cropWindow;
 let tray = null;
 
-// TODO: move to a class
 let shortcut = "Ctrl+PrintScreen";
+let shortcutCrop = "Ctrl+Shift+PrintScreen";
 
 function createWindow() {
   mainWindow = new BrowserWindow({ width: 800, height: 600, show: false });
   mainWindow.loadFile("index.html");
   mainWindow.on("closed", function() {
     mainWindow = null;
+  });
+}
+
+function createCropWindow() {
+  cropWindow = new BrowserWindow({ width: 800, height: 600, show: true });
+  cropWindow.loadFile("crop.html");
+  cropWindow.on("closed", function() {
+    cropWindow = null;
   });
 }
 
@@ -40,6 +49,13 @@ function createTray() {
       }
     },
     {
+      label: "Select area " + shortcutCrop,
+      click() {
+        console.log("click select area");
+        crop();
+      }
+    },
+    {
       label: "Exit",
       click() {
         app.exit();
@@ -55,6 +71,7 @@ function createGlobalShortcut() {
 
   if (process.platform == "darwin") {
     shortcut = "CommandOrControl+Shift+5"
+    shortcutCrop = "CommandOrControl+Shift+6";
   } 
 
   globalShortcut.register(shortcut, () => {
@@ -62,10 +79,23 @@ function createGlobalShortcut() {
     capture();
   });
 
+  globalShortcut.register(shortcutCrop, () => {
+    console.log("shortcutCrop pressed: " + shortcutCrop);
+    crop();
+  });
+
 }
 
 function capture() {
   mainWindow.webContents.send("capture", "foo");
+}
+
+function crop() {
+  if( cropWindow == null ){
+    createCropWindow();
+  } else {
+    console.log("crop window already open");
+  }
 }
 
 app.on("ready", createWindow);
